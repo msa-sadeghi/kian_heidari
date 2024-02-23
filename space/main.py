@@ -68,6 +68,11 @@ def check_if_on_edge():
 def check_collisions():
     if pygame.sprite.groupcollide(player_bullet_group, enemy_group, True, True):
         pass
+    if pygame.sprite.groupcollide(player_bullet_group, enemy_bullet_group, True, True):
+        pass
+    if pygame.sprite.spritecollide(player, enemy_bullet_group, True):
+        pass
+    
 
 
 
