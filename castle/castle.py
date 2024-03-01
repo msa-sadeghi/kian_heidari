@@ -1,4 +1,7 @@
 import pygame
+import math
+from bullet import Bullet
+from constants import bullet_img
 class Castle:
     def __init__(self, images, x,y, scale):
         self.image100 = pygame.transform.scale(images[0],\
@@ -18,7 +21,23 @@ class Castle:
         self.health = 1000
         self.max_health = self.health
         self.alive = True
+        self.clicked = False
         
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+        
+    def shoot(self, bullet_group):
+        mouse_pos = pygame.mouse.get_pos()
+        y_distance = -(mouse_pos[1] - self.rect.midleft[1])
+        x_distance = mouse_pos[0] - self.rect.midleft[0]
+        self.angle = math.atan2(y_distance, x_distance)
+        if pygame.mouse.get_pressed()[0] and not self.clicked:
+            bullet = Bullet(bullet_img, self.rect.midleft[0], self.rect.midleft[1], self.angle)
+            bullet_group.add(bullet)
+            self.clicked = True
+        if not pygame.mouse.get_pressed()[0]:
+            self.clicked = False
+            
+            
+        
         
