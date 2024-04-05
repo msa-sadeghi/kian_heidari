@@ -19,11 +19,19 @@ class Castle:
         self.rect.topleft = (x,y)
         
         self.health = 1000
+        self.money = 0
+        self.score = 0
         self.max_health = self.health
         self.alive = True
         self.clicked = False
         
     def draw(self, screen):
+        if self.health <= 250:
+            self.image = self.image25
+        elif self.health <= 500:
+            self.image = self.image50
+        else:
+            self.image = self.image100
         screen.blit(self.image, self.rect)
         
     def shoot(self, bullet_group):
