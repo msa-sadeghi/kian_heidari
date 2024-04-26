@@ -2,8 +2,13 @@ from constants import *
 from world import World
 from castle import Castle
 from enemy import Enemy
+from button import Button
+from mousepointer import MousePointer
 import random
 pygame.init()
+
+repair_btn = Button(pygame.transform.scale(repair_img, (40,40)), screen_width - 50, 10)
+mouse = MousePointer()
 game_world = World()
 bullet_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
@@ -43,7 +48,6 @@ while running:
         if enemies == 0 and not next_level :
             next_level = True
             next_level_time = pygame.time.get_ticks()
-    print(next_level)       
     game_world.draw() 
     if next_level:
         
@@ -55,6 +59,12 @@ while running:
             enemy_group.empty()
             next_level = False
             last_spawn_time = pygame.time.get_ticks()
+    
+    mouse.draw(screen)
+    r = repair_btn.draw(screen)
+    print(castle.health, r)
+    if r:
+        castle.repair()
     castle.shoot(bullet_group) 
     castle.draw(screen)
     bullet_group.update()     

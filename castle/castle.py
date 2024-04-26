@@ -19,6 +19,7 @@ class Castle:
         self.rect.topleft = (x,y)
         
         self.health = 1000
+        
         self.money = 0
         self.score = 0
         self.max_health = self.health
@@ -39,7 +40,7 @@ class Castle:
         y_distance = -(mouse_pos[1] - self.rect.midleft[1])
         x_distance = mouse_pos[0] - self.rect.midleft[0]
         self.angle = math.atan2(y_distance, x_distance)
-        if pygame.mouse.get_pressed()[0] and not self.clicked:
+        if pygame.mouse.get_pressed()[0] and not self.clicked and mouse_pos[1] > 70:
             bullet = Bullet(bullet_img, self.rect.midleft[0], self.rect.midleft[1], self.angle)
             bullet_group.add(bullet)
             self.clicked = True
@@ -48,4 +49,8 @@ class Castle:
             
             
         
-        
+    def repair(self):
+        if self.health <= 250:
+            self.health = 500
+        elif self.health <= 500:
+            self.health = self.max_health

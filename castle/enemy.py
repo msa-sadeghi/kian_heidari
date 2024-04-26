@@ -22,7 +22,7 @@ class Enemy(Sprite):
             if self.animation_type_number == 1:
                 if pygame.time.get_ticks() - self.last_attack_time > 1000:
                     self.last_attack_time = pygame.time.get_ticks()
-                    target.health -= 25
+                    target.health -= 100
                     if target.health < 0:
                         target.health = 0
             
