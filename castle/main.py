@@ -7,7 +7,17 @@ from mousepointer import MousePointer
 import random
 pygame.init()
 
+
+def show_text(txt, color, font, position):
+    text = font.render(txt, True, color)
+    rect = text.get_rect(topleft=position)
+    screen.blit(text, rect)
+
+
+font32 = pygame.font.SysFont("arial", 32)
+level = 1
 repair_btn = Button(pygame.transform.scale(repair_img, (40,40)), screen_width - 50, 10)
+armour_btn = Button(pygame.transform.scale(armour_img, (40,40)), screen_width - 100, 10)
 mouse = MousePointer()
 game_world = World()
 bullet_group = pygame.sprite.Group()
@@ -58,13 +68,23 @@ while running:
             MAX_difficulty *= 1.2
             enemy_group.empty()
             next_level = False
+            level += 1
             last_spawn_time = pygame.time.get_ticks()
     
     mouse.draw(screen)
     r = repair_btn.draw(screen)
-    print(castle.health, r)
+    
     if r:
         castle.repair()
+    r = armour_btn.draw(screen)
+    
+    if r:
+        castle.armour()
+    show_text(f"Level: {level}", (240,10,123), font32, (10,10))
+    show_text(f"Health: {castle.health}", (240,10,123), font32, (390,10))
+    show_text(f"MaxHealth: {castle.max_health}", (240,10,123), font32, (10,50))
+    show_text(f"money: {castle.money}", (240,10,123), font32, (390,50))
+    
     castle.shoot(bullet_group) 
     castle.draw(screen)
     bullet_group.update()     

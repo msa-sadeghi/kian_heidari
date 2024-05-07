@@ -50,7 +50,14 @@ class Castle:
             
         
     def repair(self):
-        if self.health <= 250:
-            self.health = 500
-        elif self.health <= 500:
-            self.health = self.max_health
+        if self.money >= 1000 and self.health <= self.max_health:
+            print("repair", self.health)
+            self.money -= 1000
+            if self.health <= 250:
+                self.health = 500
+            elif self.health <= 500:
+                self.health = self.max_health
+    def armour(self):
+        if self.money >= 500:
+            self.max_health += 500
+            self.money -= 500
