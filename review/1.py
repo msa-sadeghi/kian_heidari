@@ -14,7 +14,7 @@
 
 import tkinter as tk
 def login():
-    if user.get() == "kian" and passw.get() == "123":
+    if user.get() == "amir" and passw.get() == "123":
         r.set(f"welcome {user.get()}")
     else:
         exit()      
