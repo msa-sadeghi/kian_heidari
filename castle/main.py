@@ -4,8 +4,19 @@ from castle import Castle
 from enemy import Enemy
 from button import Button
 from mousepointer import MousePointer
+from tower import Tower
 import random
 pygame.init()
+
+
+max_towers = 4
+tower_cost = 1
+tower_positions = [
+    [screen_width - 250, screen_height - 200],
+    [screen_width - 200, screen_height - 150],
+    [screen_width - 150, screen_height - 150],
+    [screen_width - 100, screen_height - 150],
+]
 
 
 def show_text(txt, color, font, position):
@@ -18,6 +29,10 @@ font32 = pygame.font.SysFont("arial", 32)
 level = 1
 repair_btn = Button(pygame.transform.scale(repair_img, (40,40)), screen_width - 50, 10)
 armour_btn = Button(pygame.transform.scale(armour_img, (40,40)), screen_width - 100, 10)
+tower_btn = Button(pygame.transform.scale(tower_100, (40,40)), screen_width - 150, 10)
+tower_group = pygame.sprite.Group()
+
+
 mouse = MousePointer()
 game_world = World()
 bullet_group = pygame.sprite.Group()
@@ -80,6 +95,13 @@ while running:
     
     if r:
         castle.armour()
+    r = tower_btn.draw(screen)
+    
+    if r:
+        if castle.money >= tower_cost and len(tower_group) < max_towers:
+            tower = Tower(tower_images, tower_positions[-1][0], tower_positions[-1][1], 0.2)
+            tower_group.add(tower)
+        
     show_text(f"Level: {level}", (240,10,123), font32, (10,10))
     show_text(f"Health: {castle.health}", (240,10,123), font32, (390,10))
     show_text(f"MaxHealth: {castle.max_health}", (240,10,123), font32, (10,50))
@@ -89,6 +111,8 @@ while running:
     castle.draw(screen)
     bullet_group.update()     
     bullet_group.draw(screen)     
+    tower_group.update(enemy_group, bullet_group, castle)     
+    tower_group.draw(screen)     
     enemy_group.update(castle, bullet_group)     
     enemy_group.draw(screen)     
     pygame.display.update()

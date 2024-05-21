@@ -16,6 +16,10 @@ castle_25 = pygame.image.load("assets/castle/castle_25.png")
 castle_50 = pygame.image.load("assets/castle/castle_50.png")
 castle_100 = pygame.image.load("assets/castle/castle_100.png")
 castle_images = [castle_100, castle_50, castle_25]
+tower_25 = pygame.image.load("assets/tower/tower_25.png")
+tower_50 = pygame.image.load("assets/tower/tower_50.png")
+tower_100 = pygame.image.load("assets/tower/tower_100.png")
+tower_images = [tower_100, tower_50, tower_25]
 
 all_animation_images = []
 all_enemy_types = ("knight", "goblin", "purple_goblin", "red_goblin")
