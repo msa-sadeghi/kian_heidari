@@ -19,6 +19,7 @@ class Tower(Sprite):
         self.image = self.image100
         self.rect = self.image.get_rect()
         self.rect.topleft = (x,y)
+        self.last_bullet_spawn_time = pygame.time.get_ticks()
 
     def update(self, enemy_group, bullet_group, castle):
         self.got_target = False
@@ -31,8 +32,10 @@ class Tower(Sprite):
             x_dist = target_x - self.rect.midleft[0]
             y_dist = -(target_y - self.rect.midleft[1])
             self.angle = math.atan2(y_dist, x_dist)
-            bullet = Bullet(bullet_img, self.rect.midleft[0], self.rect.midleft[1], self.angle)
-            bullet_group.add(bullet)
+            if pygame.time.get_ticks() - self.last_bullet_spawn_time> 1000:
+                self.last_bullet_spawn_time = pygame.time.get_ticks()
+                bullet = Bullet(bullet_img, self.rect.midleft[0], self.rect.midleft[1], self.angle)
+                bullet_group.add(bullet)
             
         if castle.health <= 250:
             self.image = self.image25
