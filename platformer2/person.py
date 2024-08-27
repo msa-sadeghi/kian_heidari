@@ -38,6 +38,7 @@ class Person(Sprite):
         
     def update(self):
         self.animation()
+        self.check_alive()
         
     def shoot(self, group):
         if pygame.time.get_ticks() - self.last_shoot_time > 200 and self.ammo > 0:
@@ -46,7 +47,10 @@ class Person(Sprite):
             Bullet(self.rect.centerx + 0.6 * self.rect.size[0] * self.direction, \
                 self.rect.centery, self.direction, group)
             
-  
+    def check_alive(self):
+        if self.health <= 0:
+            self.alive = False
+            self.update_action(3)
             
     
     def draw(self, screen):

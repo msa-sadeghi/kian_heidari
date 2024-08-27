@@ -12,7 +12,7 @@ class Grenade(Sprite):
         self.vel_y = -11
         self.timer = 100
         
-    def update(self, explosion_group):
+    def update(self, explosion_group, player, enemy_group):
         self.vel_y += 1
         dx = self.direction * self.speed
         dy = self.vel_y
@@ -30,7 +30,16 @@ class Grenade(Sprite):
         if self.timer <= 0:
             self.kill()
             Explosion(self.rect.centerx, self.rect.centery, explosion_group)
-            # TODO REDUCE TARGET HEALTH( if grenade touches the enemy => reduce enemy health
-            # otherwise reduce player's health)
+            if abs(self.rect.centerx - player.rect.centerx) < 70 and \
+                abs(self.rect.centery - player.rect.centery) < 70:
+                    player.health -= 50
+            for enemy in enemy_group:
+                if abs(self.rect.centerx - enemy.rect.centerx) < 70 and \
+                abs(self.rect.centery - enemy.rect.centery) < 70:
+                    enemy.health -= 50
+                
+            
+                
+            
             
             
