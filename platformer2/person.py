@@ -1,3 +1,4 @@
+import random
 from pygame.sprite import Sprite
 import os
 import pygame
@@ -35,6 +36,10 @@ class Person(Sprite):
         self.vel_y = 0
         self.jump = False
         self.in_air = False
+        self.move_counter = 0
+        self.vision = pygame.Rect(0,0, 150, 20)
+        self.idling = False
+        self.idling_counter = 0
         
     def update(self):
         self.animation()
@@ -54,6 +59,7 @@ class Person(Sprite):
             
     
     def draw(self, screen):
+        # print("***************", self.flip)
         screen.blit(pygame.transform.flip(self.image,self.flip, False ), self.rect)
         
     def animation(self):
@@ -92,4 +98,34 @@ class Person(Sprite):
             self.in_air = False
         self.rect.x += dx
         self.rect.y += dy
+        
+    def ai(self, player, enemy_bullet_group):
+        if self.alive and player.alive:
+            if not self.idling and random.randint(1, 200) == 1:
+                self.update_action(0)
+                self.idling = True
+                self.idling_counter = 50
+            if self.vision.colliderect(player.rect):
+                self.update_action(0)
+                self.shoot(enemy_bullet_group)
+            else:
+                if not self.idling:
+                    if self.direction == 1:
+                        ai_moving_right = True
+                    else:
+                        ai_moving_right = False
+                    ai_moving_left = not ai_moving_right
+                    self.move(ai_moving_left, ai_moving_right)
+                    print("**********************", ai_moving_left, ai_moving_right)
+                    self.update_action(1)
+                    self.move_counter += 1
+                    self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
+                    if self.move_counter > 100:
+                        self.direction *= -1
+                        self.move_counter *= -1
+                else:
+                    self.idling_counter -= 1
+                    if self.idling_counter <= 0:
+                        self.idling = False
+        
             
