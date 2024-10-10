@@ -78,7 +78,17 @@ def draw_world():
             if world_data[i][j] >= 0:
                 screen.blit(img_list[world_data[i][j]], (j * TILE_SIZE - scroll, i * TILE_SIZE))
     
+save_img = pygame.image.load("assets/icons/save_btn.png")
+load_img = pygame.image.load("assets/icons/load_btn.png")
 
+font = pygame.font.SysFont("arail", 24)
+
+def draw_text(text, font, color, x,y):
+    t = font.render(text, True, color)
+    screen.blit(t, (x,y))
+
+save_button = Button(SCREEN_WIDTH/2, SCREEN_HEIGHT + LOWER_MARGIN - 70, save_img, 1)
+load_button = Button(SCREEN_WIDTH/2 + 200, SCREEN_HEIGHT + LOWER_MARGIN - 70, load_img, 1)
 
 
 current_tile = 0
@@ -111,6 +121,10 @@ while running:
     draw_bg()
     draw_grid()
     draw_world()
+    draw_text(f'Level: {level}', font,(255,255,255), 10, SCREEN_HEIGHT + LOWER_MARGIN - 100)
+    draw_text('Press UP or DOWN to change level', font, (255,0,0), 10, SCREEN_HEIGHT + LOWER_MARGIN - 70)
+    save_button.draw(screen)
+    load_button.draw(screen)
     pygame.draw.rect(screen, (0,255, 0), (SCREEN_WIDTH, 0, SIDE_MARGIN, SCREEN_HEIGHT))
     
     for i in range(len(button_list)):
