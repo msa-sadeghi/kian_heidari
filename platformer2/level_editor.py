@@ -1,5 +1,6 @@
 import pygame
 import pickle
+import csv
 from button import Button
 pygame.init()
 clock = pygame.time.Clock()
@@ -111,6 +112,10 @@ while running:
                 scroll_right = True
             if event.key == pygame.K_RSHIFT:
                 scroll_speed = 5
+            if event.key == pygame.K_UP:
+                level += 1
+            if event.key == pygame.K_DOWN and level > 0:
+                level -= 1
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 scroll_left = False
@@ -126,6 +131,23 @@ while running:
     save_button.draw(screen)
     load_button.draw(screen)
     pygame.draw.rect(screen, (0,255, 0), (SCREEN_WIDTH, 0, SIDE_MARGIN, SCREEN_HEIGHT))
+    if save_button.if_clicked():
+        # out = open(f"level{level}", "wb")
+        # pickle.dump(world_data, out)
+        # out.close()
+        out = open(f"level{level}.csv", "w", newline="")
+        writer = csv.writer(out, delimiter=',')
+        for row in world_data:
+            writer.writerow(row)
+        out.close()
+    if load_button.if_clicked()   :
+        scroll = 0
+        in_ = open(f"level{level}.csv", newline="")
+        reader = csv.reader(in_, delimiter=",")
+        for i,row in enumerate(reader):
+            for j, col in enumerate(row):
+                world_data[i][j] = int(col)
+            
     
     for i in range(len(button_list)):
         button_list[i].draw(screen)

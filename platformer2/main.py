@@ -2,12 +2,19 @@ import pygame
 from person import Person
 from grenade import Grenade
 from itembox import ItemBox
-from healthbar import HealthBar
+from healthbar import HealthBar 
+import csv
 pygame.init()
 
+ROWS = 16
+MAX_COLS = 150
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 640
 FPS = 60
+TILE_SIZE = SCREEN_HEIGHT // ROWS
+
+TILE_TYPES = 21
+level = 1
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 bullet_group = pygame.sprite.Group()
@@ -25,6 +32,14 @@ pine1_img = pygame.image.load("assets/background/pine1.png")
 pine2_img = pygame.image.load("assets/background/pine2.png")
 mountain_img = pygame.image.load("assets/background/mountain.png")
 sky_img = pygame.image.load("assets/background/sky_cloud.png")
+
+img_list = []
+for i in range(TILE_TYPES):
+    img = pygame.image.load(f"assets/tile/{i}.png")
+    img = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
+    img_list.append(img)
+
+
 
 def draw_bg():
     screen.fill((0,255,0))
