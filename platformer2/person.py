@@ -79,7 +79,7 @@ class Person(Sprite):
             self.image_number = 0
     
     def move(self, moving_left, moving_right):
-        print("***************", moving_left, moving_right)
+        
         dx = dy = 0
         if moving_left:
             dx = -self.speed
@@ -117,7 +117,7 @@ class Person(Sprite):
                         ai_moving_right = False
                     ai_moving_left = not ai_moving_right
                     self.move(ai_moving_left, ai_moving_right)
-                    # print("**********************", ai_moving_left, ai_moving_right)
+                    
                     self.update_action(1)
                     self.move_counter += 1
                     self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)

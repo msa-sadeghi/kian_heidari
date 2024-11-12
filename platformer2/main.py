@@ -4,6 +4,8 @@ from grenade import Grenade
 from itembox import ItemBox
 from healthbar import HealthBar 
 import csv
+
+from world import World
 pygame.init()
 
 ROWS = 16
@@ -22,9 +24,9 @@ enemy_bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
-player = Person("player", 200, 200, 10, 5)
-enemy = Person("enemy", 400, 200, 5, 0)
-enemy_group.add(enemy)
+# player = Person("player", 200, 200, 10, 5)
+# enemy = Person("enemy", 400, 200, 5, 0)
+# enemy_group.add(enemy)
 moving_left=moving_right = False
 shoot = False
 
@@ -60,15 +62,28 @@ item_box_images = {
     'Ammo' : ammo_box_img,
     'Grenade' : grenade_box_img
 }
-item_box_group = pygame.sprite.Group()
-item_box = ItemBox('Health', 100, 260, item_box_images)
-item_box_group.add(item_box)
-item_box = ItemBox('Ammo', 400, 260, item_box_images)
-item_box_group.add(item_box)
-item_box = ItemBox('Grenade', 500, 260, item_box_images)
-item_box_group.add(item_box)
+world_data = []
 
-health_bar = HealthBar(10, 10, player.health, player.max_health)
+for row in range(ROWS):
+    r = [-1] * MAX_COLS
+    world_data.append(r)
+
+
+
+with open(f"level{level}.csv", newline='') as f:
+    reader = csv.reader(f, delimiter=',')
+    for j, row in enumerate(reader):
+        for i, tile in enumerate(row):
+            world_data[j][i] = int(tile)
+
+
+item_box_group = pygame.sprite.Group()
+world = World()
+player , health_bar = world.process_data(world_data, img_list, TILE_SIZE,
+                                         item_box_group,item_box_images,enemy_group)
+
+
+
 
 grenade = False
 grenade_rel = False
@@ -118,7 +133,7 @@ while running:
             g = Grenade(player.rect.centerx + player.rect.size[0]/2, player.rect.top, player.direction)
             grenade_group.add(g)
             player.grenade -= 1
-    print(player.action)    
+       
     screen.fill((0,0,0))
     draw_bg()       
     player.draw(screen)
@@ -126,10 +141,10 @@ while running:
     player.update()
     # enemy.update()
     # enemy.move(False, False)
-    bullet_group.update(player, enemy, bullet_group)
-    bullet_group.draw(screen)
-    enemy_bullet_group.update(player, enemy, enemy_bullet_group)
-    enemy_bullet_group.draw(screen)
+    # bullet_group.update(player, enemy, bullet_group)
+    # bullet_group.draw(screen)
+    # enemy_bullet_group.update(player, enemy, enemy_bullet_group)
+    # enemy_bullet_group.draw(screen)
     grenade_group.update(explosion_group, player, enemy_group)
     grenade_group.draw(screen)
     explosion_group.update()
@@ -143,6 +158,8 @@ while running:
     item_box_group.update(player)
     item_box_group.draw(screen)
     health_bar.draw(player.health, screen)
+    world.draw(screen)
     pygame.display.update()
     clock.tick(FPS)
+    
     
