@@ -14,7 +14,8 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 640
 FPS = 60
 TILE_SIZE = SCREEN_HEIGHT // ROWS
-
+scroll = 0
+screen_scroll = 0
 TILE_TYPES = 21
 level = 1
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -45,11 +46,12 @@ for i in range(TILE_TYPES):
 
 def draw_bg():
     screen.fill((0,255,0))
-    screen.blit(sky_img, (0,0))
-    screen.blit(mountain_img, (0,SCREEN_HEIGHT - mountain_img.get_height() - 300))
-    screen.blit(pine1_img, (0,SCREEN_HEIGHT - pine1_img.get_height() - 150))
-    screen.blit(pine2_img, (0,SCREEN_HEIGHT - pine2_img.get_height() ))
-    
+    width = sky_img.get_width()
+    for i in range(4):
+        screen.blit(sky_img, (i * width - scroll * 0.5 ,0))
+        screen.blit(mountain_img, (i * width - scroll * 0.6,SCREEN_HEIGHT - mountain_img.get_height() - 300))
+        screen.blit(pine1_img, (i * width - scroll * 0.7,SCREEN_HEIGHT - pine1_img.get_height() - 150))
+        screen.blit(pine2_img, (i * width - scroll * 0.8,SCREEN_HEIGHT - pine2_img.get_height() ))    
 
 
 
@@ -118,7 +120,9 @@ while running:
                 grenade_rel = False
                 
     if player.alive:        
-        player.move(moving_left, moving_right)
+        screen_scroll = player.move(moving_left, moving_right, world,scroll)
+        print(scroll)
+        scroll -= screen_scroll
         if moving_left or moving_right:
             player.update_action(1)
         elif player.in_air:
@@ -141,24 +145,24 @@ while running:
     player.update()
     # enemy.update()
     # enemy.move(False, False)
-    bullet_group.update(player, enemy, bullet_group)
+    for enemy in enemy_group:
+        bullet_group.update(player, enemy, bullet_group)
+        enemy_bullet_group.update(player, enemy, enemy_bullet_group)
     bullet_group.draw(screen)
-    enemy_bullet_group.update(player, enemy, enemy_bullet_group)
     enemy_bullet_group.draw(screen)
     grenade_group.update(explosion_group, player, enemy_group)
     grenade_group.draw(screen)
     explosion_group.update()
     explosion_group.draw(screen)
     for enemy in enemy_group:
-        enemy.ai(player, enemy_bullet_group)
+        enemy.ai(player, enemy_bullet_group, world,scroll)
         enemy.update()
         enemy.draw(screen)
-    # enemy_group.update()
-    # enemy_group.draw(screen)
+    
     item_box_group.update(player)
     item_box_group.draw(screen)
     health_bar.draw(player.health, screen)
-    world.draw(screen)
+    world.draw(screen, screen_scroll)
     pygame.display.update()
     clock.tick(FPS)
     

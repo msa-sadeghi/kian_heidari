@@ -6,7 +6,7 @@ class World:
         self.obstacle_list = []
         
     def process_data(self, data, image_list, tile_size, item_box_group, item_box_images, enemy_group):
-        
+        self.level_length = len(data[0])
         for i, row in enumerate(data):
             for j, tile in enumerate(row):
                 if tile >= 0:
@@ -45,8 +45,9 @@ class World:
                         #TODO Add Exit
                         
         return player, health_bar
-    def draw(self, screen):
+    def draw(self, screen, scroll):
         for tile in self.obstacle_list:
+            tile[1][0] += scroll
             screen.blit(tile[0], tile[1])
             
                         

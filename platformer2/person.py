@@ -3,6 +3,7 @@ from pygame.sprite import Sprite
 import os
 import pygame
 from bullet import Bullet
+from config import *
 class Person(Sprite):
     def __init__(self,char_type, x,y, ammo, grenade):
         super().__init__()
@@ -40,6 +41,7 @@ class Person(Sprite):
         self.vision = pygame.Rect(0,0, 150, 20)
         self.idling = False
         self.idling_counter = 0
+        self.alive = True
         
     def update(self):
         self.animation()
@@ -53,6 +55,7 @@ class Person(Sprite):
                 self.rect.centery, self.direction, group)
             
     def check_alive(self):
+        
         if self.health <= 0:
             self.alive = False
             self.update_action(3)
@@ -78,9 +81,10 @@ class Person(Sprite):
             self.action = new_action
             self.image_number = 0
     
-    def move(self, moving_left, moving_right):
+    def move(self, moving_left, moving_right, world, scroll):
         
         dx = dy = 0
+        screen_scroll = 0
         if moving_left:
             dx = -self.speed
             self.flip = True
@@ -92,15 +96,41 @@ class Person(Sprite):
         if self.jump == True:
             self.vel_y = -11
             self.in_air = True
-        self.vel_y += 1     
+        self.vel_y += 1   
+        if self.vel_y > 10:
+            self.vel_y = 10  
         dy += self.vel_y
-        if self.rect.bottom + dy > 300:
-            dy = 0
-            self.in_air = False
+        
+        for tile in world.obstacle_list:
+            if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
+                dx = 0
+                if self.char_type == "enemy":
+                    self.direction *= -1
+                    self.move_counter = 0
+            
+            if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.rect.width, self.rect.height):
+                if self.vel_y < 0:
+                    self.vel_y = 0
+                    dy = tile[1].bottom - self.rect.top
+                else:
+                    dy = tile[1].top - self.rect.bottom
+                    self.vel_y = 0
+                    self.in_air = False
+            # TODO    
+        
+        if self.char_type == "player":
+            if self.rect.left + dx <0 or self.rect.right + dx > 800:
+                dx = 0
         self.rect.x += dx
         self.rect.y += dy
+        if self.char_type == "player":
+            if (self.rect.right > 800 - 100 and scroll<  world.level_length * TILE_SIZE - SCREEN_WIDTH) or (self.rect.left < 100 and scroll > abs(dx)):
+                self.rect.x -= dx
+                screen_scroll = -dx
+        return screen_scroll
+            
         
-    def ai(self, player, enemy_bullet_group):
+    def ai(self, player, enemy_bullet_group, world,scroll):
         if self.alive and player.alive:
             if not self.idling and random.randint(1, 200) == 1:
                 self.update_action(0)
@@ -116,7 +146,7 @@ class Person(Sprite):
                     else:
                         ai_moving_right = False
                     ai_moving_left = not ai_moving_right
-                    self.move(ai_moving_left, ai_moving_right)
+                    self.move(ai_moving_left, ai_moving_right, world,scroll)
                     
                     self.update_action(1)
                     self.move_counter += 1
